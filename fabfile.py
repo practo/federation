@@ -20,7 +20,7 @@ def remove_compiled_classes():
     info('Removing compiled python classes...')
     local('pyclean .')
     return local(
-        'find ./app -name "*.py[co]" -print0 | xargs -0 rm -f'
+        'find ./federation_api ./config -name "*.py[co]" -print0 | xargs -0 rm -f'
     )
 
 
@@ -28,7 +28,7 @@ def remove_compiled_classes():
 def fix_directory_permission():
     info('Fixing directory permissions...')
     return local(
-        '! find ./app '
+        '! find ./federation_api ./config '
         '-path .git -prune -o '
         '-name .webassets-cache -prune -o '
         '-name gen -prune -o '
@@ -55,7 +55,7 @@ def check_code_standard():
     """Running coding standards check"""
     info('Running coding standards check...')
     return local(
-        'pep8 ./app'
+        'pep8 ./federation_api ./config'
     )
 
 
@@ -64,7 +64,7 @@ def static_code_analyzer():
     """Running static code analyzer"""
     info('Running static code analyzer...')
     return local(
-        'pyflakes ./app'
+        'pyflakes ./federation_api ./config'
     )
 
 
@@ -73,7 +73,7 @@ def check_print_statement():
     """Checking for debug print statements"""
     info('Checking for debug print statements...')
     return local(
-        '! find ./app -type f -name "*.py" -print0 | '
+        '! find ./federation_api ./config -type f -name "*.py" -print0 | '
         'xargs -0 grep -Pn \'(?<![Bb]lue|>>> )print\' | '
         'grep -v NOCHECK'
     )
@@ -84,7 +84,7 @@ def servername_compatibility():
     """Checking for no-servername compatibility"""
     info('Checking for no-servername compatibility...')
     return local(
-        '! find ./app -name "default_settings.py" -o '
+        '! find ./federation_api ./config -name "default_settings.py" -o '
         ' -type f -name "*.py" -print0 | '
         'xargs -0 grep -Pn \'SERVER_NAME|ENABLE_HTTPS|SSO_DOMAIN|'
         '(SOFTWARE(_WEBSITE)?|EPICENTER|FABRIC|PVR|PRACTONAV)_HOST\''
@@ -113,7 +113,7 @@ def servername_compatibility():
 @task
 def grep(term, flags=''):
     with lcd(ROOT_DIR), settings(hide('running')):
-        local('find app tests '
+        local('find federation_api ./config tests '
               '-name "*~" -o '
               '-name "*.py[co]" -o '
               '-name "*.dot" -o '

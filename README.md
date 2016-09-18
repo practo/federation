@@ -1,4 +1,4 @@
 ### Federation
-> *Practo Flask Framework Boilerplate*
+> *Practo Flask API Framework Boilerplate*
 
 ---
