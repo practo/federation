@@ -1,14 +1,7 @@
 import logging
 from flask import make_response, jsonify
 from federation_api.app.api import application
-from app import db, ENV
-
-if(ENV in ['latest', 'production']):
-    @application.errorhandler(Exception)
-    def generic(error):
-        response = make_response(Exception, 500)
-        response.mimetype = 'text/plain'
-        return response
+from app import db
 
 
 @application.route('/status', methods=['GET'])

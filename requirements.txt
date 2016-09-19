@@ -5,3 +5,4 @@ Flask == 0.11.1
 flask-environments
 Flask-SQLAlchemy
 Flask-Migrate
+inflection

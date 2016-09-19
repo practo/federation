@@ -49,11 +49,6 @@ app.logger.addHandler(logging.StreamHandler())
 # Flask-SQLAlchemy already binds a session lifecycle to a request scope
 db = SQLAlchemy(app)
 
-import federation_api
-from config.routes import blueprints
-for blueprint_name, blueprint_url_prefix in blueprints:
-    app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
-
 import sys
 import getopt
 
@@ -80,4 +75,7 @@ if __name__ == '__main__':
         else:
             command_help()
 
+    from config.routes import blueprints
+    for blueprint_name, blueprint_url_prefix in blueprints:
+        app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
     app.run(host=host, port=port)
