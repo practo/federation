@@ -14,23 +14,23 @@ config.from_object(CommonConfig)
 config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 env = Environments(app)
 env.from_yaml(config['CONFIG_PATH'])
-ENV = config.get('ENV')
-if ENV == 'test':
+ENV = config.get('ENVIORNMENT')
+if ENV == 'TEST':
     app.config.from_object(TestConfig)
-elif ENV == 'development':
+elif ENV == 'DEVELOPMENT':
     app.config.from_object(DevelopmentConfig)
-elif ENV == 'staging':
+elif ENV == 'STAGING':
     app.config.from_object(StagingConfig)
-elif ENV == 'latest':
+elif ENV == 'LATEST':
     app.config.from_object(LatestConfig)
-elif ENV == 'production':
+elif ENV == 'PRODUCTION':
     app.config.from_object(ProductionConfig)
 else:
     # TODO: ENV not set
     pass
 
 
-if(ENV in ['latest', 'production']):
+if(ENV in ['LATEST', 'PRODUCTION']):
     @app.errorhandler(Exception)
     def generic(error):
         response = make_response(Exception, 500)
@@ -57,7 +57,7 @@ def command_help():
     print 'Usage: app.py [options]\n'
     print 'Options:'
     print '\t-h, --host    Host binding IP[0.0.0.0]'
-    print '\t-p, --port    Port[8000]'
+    print '\t-p, --port    Port[1786]'
     print '\t-h, --help    Help'
     sys.exit(1)
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     options, remainder = getopt.getopt(sys.argv[1:],
                                        'h:p:h', ['host=', 'port=', 'help'])
     host = '0.0.0.0'
-    port = 8000
+    port = 1786
     for o, p in options:
         if o in ['-h', '--host']:
             host = p

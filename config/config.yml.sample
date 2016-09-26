@@ -10,7 +10,6 @@ COMMON: &common
 
 DEVELOPMENT: &development
   <<: *common
-  ENV: 'development'
   DEBUG: True
   # DB
   SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_development?client_encoding=utf8'
@@ -18,7 +17,6 @@ DEVELOPMENT: &development
 
 TEST: &test
   <<: *common
-  ENV: 'test'
   TESTING: True
   # DB
   SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_test?client_encoding=utf8'
@@ -26,20 +24,17 @@ TEST: &test
 
 STAGING: &staging
   <<: *common
-  ENV: 'staging'
   # DB
   SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_staging?client_encoding=utf8'
 
 
 LATEST: &latest
   <<: *common
-  ENV: 'latest'
   # DB
   SQLALCHEMY_DATABASE_URI: ''
 
 
 PRODUCTION: &production
   <<: *common
-  ENV: 'production'
   # DB
   SQLALCHEMY_DATABASE_URI: ''

@@ -2,7 +2,7 @@ modules = [
     {
         'app': {
             'api': [
-                'status'
+                'defaults'
             ]
         }
     }

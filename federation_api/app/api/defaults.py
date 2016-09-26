@@ -1,7 +1,15 @@
 import logging
 from flask import make_response, jsonify
 from federation_api.app.api import application
-from app import db
+from app import ENV, config, db
+
+if(ENV in ['DEVELOPMENT', 'TEST']):
+    @application.route('/', methods=['GET'])
+    def index():
+        env = {}
+        for configuration, value in config.iteritems():
+            env[configuration] = str(value)
+        return make_response(jsonify(env), 200)
 
 
 @application.route('/status', methods=['GET'])

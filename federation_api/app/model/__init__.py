@@ -102,6 +102,10 @@ class StarFleet(db.Model):
             return None
 
     @classmethod
+    def find_or_initialize_by(self, **droids):
+        pass
+
+    @classmethod
     def find_or_create_by(self, **droids):
         return self.find_by(**droids) or self.create(**droids)
 
