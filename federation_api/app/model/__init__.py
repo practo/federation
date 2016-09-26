@@ -22,6 +22,8 @@ class StarFleet(db.Model):
             if(hasattr(self, droid_name)):
                 setattr(self, droid_name, droid_value)
 
+    # Class methods BEGIN
+
     @classmethod
     def new(self, **droids):
         return self(**droids)
@@ -103,7 +105,7 @@ class StarFleet(db.Model):
 
     @classmethod
     def find_or_initialize_by(self, **droids):
-        pass
+        return self.find_by(**droids) or self.new(**droids)
 
     @classmethod
     def find_or_create_by(self, **droids):
@@ -120,6 +122,21 @@ class StarFleet(db.Model):
     @classmethod
     def count_with_deleted(self):
         return db.session.query(db.func.count(self.id)).scalar()
+
+    # Class methods END
+
+    # Instance methods BEGIN
+
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.flush()
+            db.session.commit()
+        except exc.SQLAlchemyError as e:
+            logging.exception(e)
+            db.session.rollback()
+            self.errors.append(e.message)
+        return self
 
     def update(self, **droids):
         for droid_name, droid_value in droids.iteritems():
@@ -147,3 +164,5 @@ class StarFleet(db.Model):
                 db.session.rollback()
                 self.errors.append(e.message)
             return self
+
+    # Instance methods END
