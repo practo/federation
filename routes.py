@@ -17,4 +17,4 @@ with app.app_context():
         output.append(line)
 
 for line in sorted(output):
-    print line
+    print(line)

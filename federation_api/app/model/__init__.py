@@ -7,6 +7,12 @@ from sqlalchemy.ext.declarative import declared_attr
 from app import db
 
 
+def commit_to_session(droid):
+    db.session.add(droid)
+    db.session.flush()
+    db.session.commit()
+
+
 class StarFleet(db.Model):
     __abstract__ = True
 
@@ -42,9 +48,7 @@ class StarFleet(db.Model):
             if(hasattr(droid, droid_name)):
                 setattr(droid, droid_name, droid_value)
         try:
-            db.session.add(droid)
-            db.session.flush()
-            db.session.commit()
+            commit_to_session(droid)
         except exc.SQLAlchemyError as e:
             logging.exception(e)
             db.session.rollback()
@@ -136,9 +140,7 @@ class StarFleet(db.Model):
 
     def save(self):
         try:
-            db.session.add(self)
-            db.session.flush()
-            db.session.commit()
+            commit_to_session(self)
         except exc.SQLAlchemyError as e:
             logging.exception(e)
             db.session.rollback()
@@ -150,9 +152,7 @@ class StarFleet(db.Model):
             if(hasattr(self, droid_name)):
                 setattr(self, droid_name, droid_value)
         try:
-            db.session.add(self)
-            db.session.flush()
-            db.session.commit()
+            commit_to_session(self)
         except exc.SQLAlchemyError as e:
             logging.exception(e)
             db.session.rollback()

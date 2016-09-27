@@ -13,13 +13,16 @@ def set_instance(model, id):
     return instance
 
 
-def sanitized_parameters(model, parameters, *droid_names):
-    droid_key = underscore(model.__name__)
+def droid_parameters(model, parameters, droid_key):
     if(droid_key not in parameters.keys()):
         raise MalformedRequestException(droid_key)
-    else:
-        model_parameters = parameters[droid_key]
 
+    return parameters[droid_key]
+
+
+def sanitized_parameters(model, parameters, *droid_names):
+    droid_key = underscore(model.__name__)
+    model_parameters = droid_parameters(model, parameters, droid_key)
     sanitized_droid_names = {}
     missing_droid_names = []
     for droid_name in droid_names:
@@ -35,11 +38,7 @@ def sanitized_parameters(model, parameters, *droid_names):
 
 def permitted_parameters(model, parameters, *droid_names):
     droid_key = underscore(model.__name__)
-    if(droid_key not in parameters.keys()):
-        raise MalformedRequestException(droid_key)
-    else:
-        model_parameters = parameters[droid_key]
-
+    model_parameters = droid_parameters(model, parameters, droid_key)
     permitted_droid_names = {}
     unpermitted_droid_names = []
     for droid_name in droid_names:

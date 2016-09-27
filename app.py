@@ -45,8 +45,6 @@ app.logger.addHandler(logging.StreamHandler())
 # from sqlalchemy.dialects import postgresql
 # q = ...
 # logging.debug(str(q.statement.compile(dialect=postgresql.dialect())))
-# FIXME: Remove all instances of db.session.close()
-# Flask-SQLAlchemy already binds a session lifecycle to a request scope
 db = SQLAlchemy(app)
 
 # New relic monitoring
@@ -63,11 +61,11 @@ import getopt
 
 
 def command_help():
-    print 'Usage: app.py [options]\n'
-    print 'Options:'
-    print '\t-h, --host    Host binding IP[0.0.0.0]'
-    print '\t-p, --port    Port[1786]'
-    print '\t-h, --help    Help'
+    print('Usage: app.py [options]\n')
+    print('Options:')
+    print('\t-h, --host    Host binding IP[0.0.0.0]')
+    print('\t-p, --port    Port[1786]')
+    print('\t-h, --help    Help')
     sys.exit(1)
 
 
