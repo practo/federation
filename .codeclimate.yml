@@ -2,18 +2,17 @@
 engines:
   duplication:
     enabled: true
+    exclude_fingerprints:
+    - 7b22f1df906bbdcd93d035c81b674a3a
     config:
       languages:
       - python
   fixme:
-    enabled: false
+    enabled: true
   pep8:
     enabled: true
   radon:
     enabled: true
-    checks:
-      Complexity:
-        enabled: false
 ratings:
   paths:
   - "**.py"
