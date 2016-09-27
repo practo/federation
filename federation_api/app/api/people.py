@@ -54,13 +54,11 @@ def update(id):
     update_attributes = ['name']
     try:
         person = set_instance(Person, id)
-    except NotFoundException as e:
-        return e.message
-    try:
         person = person.update(
             **permitted_parameters(Person, request.json, *update_attributes))
         process_instance(person)
-    except (UnpermittedParametersException, UnprocessibleEntryException) as e:
+    except (NotFoundException, UnpermittedParametersException,
+            UnprocessibleEntryException) as e:
         return e.message
 
     attributes = ['name', 'created_at', 'updated_at']
@@ -69,3 +67,18 @@ def update(id):
     return make_response(jsonify(
             StarFleetHelper.serialize_as_json(person, *attributes, **config)
         ))
+
+
+@people.route('/<id>', methods=['DELETE'])
+def delete():
+    try:
+        person = set_instance(Person, id)
+        person = person.delete()
+    except (NotFoundException, UnprocessibleEntryException) as e:
+        return e.message
+
+    return make_response(jsonify(
+        {
+            'status': "Person with id='{0}' was successfully deleted"
+                      .format(id)
+        }), 202)
