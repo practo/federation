@@ -3,6 +3,6 @@ pep8
 pyflakes
 Flask == 0.11.1
 flask-environments
+alembic
 Flask-SQLAlchemy
-Flask-Migrate
 inflection

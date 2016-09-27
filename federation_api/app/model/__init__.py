@@ -9,13 +9,20 @@ from app import db
 
 class StarFleet(db.Model):
     __abstract__ = True
+
+    # Instance defaults BEGIN
+
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.now())
+    updated_at = db.Column(db.DateTime, nullable=False, default=db.func.now(),
+                           onupdate=db.func.now())
     errors = []
 
-    # TODO: Default timestamps
+    # Instance defaults END
 
+    # FIXME: Does not work
     @declared_attr
-    def __tablename__(self):
-        return pluralize(underscore(self.__name__))
+    def __tablename__(cls):
+        return pluralize(underscore(cls.__name__))
 
     def __init__(self, **droids):
         for droid_name, droid_value in droids.iteritems():

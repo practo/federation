@@ -1,5 +1,6 @@
-from federation_api.app.api import application
+from federation_api.app.api.__init__ import application, people
 
 blueprints = [
-    [application, '']
+    [application, ''],
+    [people, '/people']
 ]

@@ -2,7 +2,8 @@ modules = [
     {
         'app': {
             'api': [
-                'defaults'
+                'application',
+                'people'
             ]
         }
     }

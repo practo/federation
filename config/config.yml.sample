@@ -12,20 +12,20 @@ DEVELOPMENT: &development
   <<: *common
   DEBUG: True
   # DB
-  SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_development?client_encoding=utf8'
+  SQLALCHEMY_DATABASE_URI: 'sqlite:////tmp/federation_development.db'
 
 
 TEST: &test
   <<: *common
   TESTING: True
   # DB
-  SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_test?client_encoding=utf8'
+  SQLALCHEMY_DATABASE_URI: 'sqlite:////tmp/federation_test.db'
 
 
 STAGING: &staging
   <<: *common
   # DB
-  SQLALCHEMY_DATABASE_URI: 'postgresql://postgres:@localhost/holonet_staging?client_encoding=utf8'
+  SQLALCHEMY_DATABASE_URI: 'sqlite:////tmp/federation_staging.db'
 
 
 LATEST: &latest

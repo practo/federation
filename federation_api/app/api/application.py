@@ -1,6 +1,6 @@
 import logging
 from flask import make_response, jsonify
-from federation_api.app.api import application
+from federation_api.app.api.__init__ import application
 from app import ENV, config, db
 
 if(ENV in ['DEVELOPMENT', 'TEST']):
@@ -18,7 +18,6 @@ def status():
     status_code = 200
     # Check status of DB
     try:
-        # Specfic to Postgres
         db.engine.table_names()
         message.get('status')['Database'] = 'Up'
     except Exception as e:
