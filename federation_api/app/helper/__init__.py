@@ -1,4 +1,5 @@
 import json
+import datetime
 from copy import deepcopy
 from inflection import underscore, pluralize
 
@@ -6,12 +7,19 @@ from inflection import underscore, pluralize
 class StarFleetHelper():
     @classmethod
     def serialize_as_json(self, star_fleet_instance, *droid_names, **config):
+        datetime_format = config.get('datetime_format', '%s')
         star_fleet_json = {}
         for droid_name in droid_names:
             if(hasattr(star_fleet_instance, droid_name)):
                 droid_value = getattr(star_fleet_instance, droid_name)
-                star_fleet_json[droid_name] = json.dumps(droid_value) \
-                    if type(droid_value) is dict else droid_value
+                droid_value_type = type(droid_value)
+                if(droid_value_type is dict):
+                    star_fleet_json[droid_name] = json.dumps(droid_value)
+                elif(droid_value_type is datetime.datetime):
+                    star_fleet_json[droid_name] = droid_value\
+                        .strftime(datetime_format)
+                else:
+                    star_fleet_json[droid_name] = droid_value
         star_fleet_instance_json = {}
         if(config.get('root', True)):
             star_fleet_json_root = config.get('root_name',
@@ -41,6 +49,7 @@ class StarFleetHelper():
                 'root_name',
                 pluralize(underscore(type(star_fleet_instances[0]).__name__)))
             star_fleets_json[star_fleets_json_root] = star_fleets
+            star_fleets_json['total'] = len(star_fleets)
         else:
             star_fleets_json = star_fleets
         return star_fleets_json

@@ -7,6 +7,8 @@ class CommonConfig(object):
                                                     '..'))
     CONFIG_PATH = os.path.abspath(os.path.join(APPLICATION_ROOT, 'config',
                                                'config.yml'))
+    NEWRELIC_INI_PATH = os.path.abspath(os.path.join(APPLICATION_ROOT, 'etc',
+                                               'newrelic.ini'))
 
 
 class DevelopmentConfig():

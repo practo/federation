@@ -6,3 +6,5 @@ flask-environments
 alembic
 Flask-SQLAlchemy
 inflection
+newrelic
+locustio

@@ -6,6 +6,8 @@ COMMON: &common
   SECRET_KEY: 'replace-with-a-random-string'
   # DB
   SQLALCHEMY_DEBUG: DEBUG
+  # Newrelic
+  ENABLE_NEWRELIC_MONITORING: False
 
 
 DEVELOPMENT: &development
@@ -26,15 +28,21 @@ STAGING: &staging
   <<: *common
   # DB
   SQLALCHEMY_DATABASE_URI: 'sqlite:////tmp/federation_staging.db'
+  # Newrelic
+  ENABLE_NEWRELIC_MONITORING: True
 
 
 LATEST: &latest
   <<: *common
   # DB
   SQLALCHEMY_DATABASE_URI: ''
+  # Newrelic
+  ENABLE_NEWRELIC_MONITORING: True
 
 
 PRODUCTION: &production
   <<: *common
   # DB
   SQLALCHEMY_DATABASE_URI: ''
+  # Newrelic
+  ENABLE_NEWRELIC_MONITORING: True

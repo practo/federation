@@ -49,6 +49,15 @@ app.logger.addHandler(logging.StreamHandler())
 # Flask-SQLAlchemy already binds a session lifecycle to a request scope
 db = SQLAlchemy(app)
 
+# New relic monitoring
+def _init_newrelic_monitoring():
+    if config.get('ENABLE_NEWRELIC_MONITORING', False):
+        newrelic_ini = config.get('NEWRELIC_INI_PATH', False)
+        if(newrelic_ini):
+            from newrelic import agent as newrelic_agent
+            newrelic_agent.initialize(newrelic_ini, ENV.lower())
+            app.wsgi_app = newrelic_agent.WSGIApplicationWrapper(app.wsgi_app)
+
 import sys
 import getopt
 
@@ -78,4 +87,5 @@ if __name__ == '__main__':
     from config.routes import blueprints
     for blueprint_name, blueprint_url_prefix in blueprints:
         app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
+    _init_newrelic_monitoring()
     app.run(host=host, port=port)
