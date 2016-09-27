@@ -1,8 +1,8 @@
 from flask import request, make_response, jsonify
 from federation_api.app.api.__init__ import people, set_instance, \
-    sanitized_parameters, permitted_parameters, \
+    sanitized_parameters, permitted_parameters, process_instance, \
     NotFoundException, MalformedRequestException, \
-    UnpermittedParametersException
+    UnpermittedParametersException, UnprocessibleEntryException
 from federation_api.app.helper.__init__ import StarFleetHelper
 from federation_api.app.model.person import Person
 
@@ -37,13 +37,10 @@ def create():
     try:
         person = Person.create(
             **sanitized_parameters(Person, request.json, *required_attributes))
-    except MalformedRequestException as e:
+        process_instance(person)
+    except (MalformedRequestException, UnprocessibleEntryException) as e:
         return e.message
-    if(person.errors):
-        return make_response(jsonify(
-            {
-                'status': [error.message for error in person.errors]
-            }), 422)
+
     attributes = ['name', 'created_at', 'updated_at']
     config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
 
@@ -62,13 +59,10 @@ def update(id):
     try:
         person = person.update(
             **permitted_parameters(Person, request.json, *update_attributes))
-    except UnpermittedParametersException as e:
+        process_instance(person)
+    except (UnpermittedParametersException, UnprocessibleEntryException) as e:
         return e.message
-    if(person.errors):
-        return make_response(jsonify(
-            {
-                'status': [error.message for error in person.errors]
-            }), 422)
+
     attributes = ['name', 'created_at', 'updated_at']
     config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
 

@@ -8,9 +8,16 @@ from app import db
 
 
 def commit_to_session(droid):
-    db.session.add(droid)
-    db.session.flush()
-    db.session.commit()
+    try:
+        db.session.add(droid)
+        db.session.flush()
+        db.session.commit()
+    except exc.SQLAlchemyError as e:
+        logging.exception(e)
+        db.session.rollback()
+        droid.errors.append(e.message)
+    finally:
+        return droid
 
 
 class StarFleet(db.Model):
@@ -47,12 +54,8 @@ class StarFleet(db.Model):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(droid, droid_name)):
                 setattr(droid, droid_name, droid_value)
-        try:
-            commit_to_session(droid)
-        except exc.SQLAlchemyError as e:
-            logging.exception(e)
-            db.session.rollback()
-            droid.errors.append(e.message)
+        droid = commit_to_session(droid)
+
         return droid
 
     @classmethod
@@ -139,24 +142,16 @@ class StarFleet(db.Model):
     # Instance methods BEGIN
 
     def save(self):
-        try:
-            commit_to_session(self)
-        except exc.SQLAlchemyError as e:
-            logging.exception(e)
-            db.session.rollback()
-            self.errors.append(e.message)
+        self = commit_to_session(self)
+
         return self
 
     def update(self, **droids):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(self, droid_name)):
                 setattr(self, droid_name, droid_value)
-        try:
-            commit_to_session(self)
-        except exc.SQLAlchemyError as e:
-            logging.exception(e)
-            db.session.rollback()
-            self.errors.append(e.message)
+        self = commit_to_session(self)
+
         return self
 
     def delete(self):

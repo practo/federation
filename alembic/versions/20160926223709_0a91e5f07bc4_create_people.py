@@ -16,6 +16,7 @@ down_revision = None
 branch_labels = None
 depends_on = None
 
+
 def upgrade():
     op.create_table('people',
                     sa.Column('id', sa.Integer(), nullable=False, index=True),
@@ -23,8 +24,8 @@ def upgrade():
                               index=True, unique=True),
                     sa.Column('phone', sa.String(length=20), nullable=True,
                               index=True, unique=True),
-                    sa.Column('account_id', sa.String(length=20), nullable=True,
-                              index=True, unique=True),
+                    sa.Column('account_id', sa.String(length=20),
+                              nullable=True, index=True, unique=True),
                     sa.Column('name', sa.String(length=50), nullable=True,
                               index=True),
                     sa.Column('created_at', sa.DateTime, nullable=False,

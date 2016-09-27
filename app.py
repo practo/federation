@@ -1,3 +1,5 @@
+import sys
+import getopt
 import logging
 from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
@@ -47,6 +49,7 @@ app.logger.addHandler(logging.StreamHandler())
 # logging.debug(str(q.statement.compile(dialect=postgresql.dialect())))
 db = SQLAlchemy(app)
 
+
 # New relic monitoring
 def _init_newrelic_monitoring():
     if config.get('ENABLE_NEWRELIC_MONITORING', False):
@@ -55,9 +58,6 @@ def _init_newrelic_monitoring():
             from newrelic import agent as newrelic_agent
             newrelic_agent.initialize(newrelic_ini, ENV.lower())
             app.wsgi_app = newrelic_agent.WSGIApplicationWrapper(app.wsgi_app)
-
-import sys
-import getopt
 
 
 def command_help():

@@ -54,6 +54,11 @@ def permitted_parameters(model, parameters, *droid_names):
     return permitted_droid_names
 
 
+def process_instance(droid):
+    if(droid.errors):
+        raise UnprocessibleEntryException(droid.errors)
+
+
 class NotFoundException(Exception):
     message = None
 
@@ -98,3 +103,13 @@ class UnpermittedParametersException(Exception):
             Exception.__init__(self)
         except KeyError as e:
             raise SyntaxError('{0} is missing'.format(e.message))
+
+
+class UnprocessibleEntryException(Exception):
+    message = None
+
+    def __init__(self, errors):
+        self.message = make_response(jsonify(
+            {
+                'status': [error.message for error in errors]
+            }), 422)

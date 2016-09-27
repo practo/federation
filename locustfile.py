@@ -23,13 +23,14 @@ class PeopleBehavior(TaskSet):
     def show(self):
         self.client.get('/people/1')
 
+
 class HealthAgent(HttpLocust):
     task_set = StatusBehavior
-    min_wait=5000
-    max_wait=9000
+    min_wait = 5000
+    max_wait = 9000
 
 
 class PeopleAgent(HttpLocust):
     task_set = PeopleBehavior
-    min_wait=5000
-    max_wait=9000
+    min_wait = 5000
+    max_wait = 9000
