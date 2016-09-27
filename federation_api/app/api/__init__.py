@@ -15,7 +15,7 @@ def set_instance(model, id):
 
 def droid_parameters(model, parameters, droid_key):
     if(droid_key not in parameters.keys()):
-        raise MalformedRequestException(droid_key)
+        raise RequestParametersException('is missing', droid_key)
 
     return parameters[droid_key]
 
@@ -31,7 +31,7 @@ def sanitized_parameters(model, parameters, *droid_names):
         except KeyError:
             missing_droid_names.append('.'.join([droid_key, droid_name]))
     if(missing_droid_names):
-        raise MalformedRequestException(missing_droid_names)
+        raise RequestParametersException('is missing', *missing_droid_names)
 
     return sanitized_droid_names
 
@@ -49,7 +49,8 @@ def permitted_parameters(model, parameters, *droid_names):
                                for key in model_parameters.keys()
                                if key not in droid_names]
     if(unpermitted_droid_names):
-        raise UnpermittedParametersException(unpermitted_droid_names)
+        raise RequestParametersException('cannot be updated',
+                                         *unpermitted_droid_names)
 
     return permitted_droid_names
 
@@ -75,30 +76,15 @@ class NotFoundException(Exception):
             raise SyntaxError('{0} is missing'.format(e.message))
 
 
-class MalformedRequestException(Exception):
+class RequestParametersException(Exception):
     message = None
 
-    def __init__(self, keys):
+    def __init__(self, message, *parameter_keys):
         try:
             self.message = make_response(jsonify(
                 {
-                    'status': ["'{0}' key is missing".format(key)
-                               for key in keys]
-                }), 422)
-            Exception.__init__(self)
-        except KeyError as e:
-            raise SyntaxError('{0} is missing'.format(e.message))
-
-
-class UnpermittedParametersException(Exception):
-    message = None
-
-    def __init__(self, keys):
-        try:
-            self.message = make_response(jsonify(
-                {
-                    'status': ["'{0}' key cannot be updated"
-                               .format(key) for key in keys]
+                    'status': ["'{0}' key {1}".format(parameter_key, message)
+                               for parameter_key in parameter_keys]
                 }), 422)
             Exception.__init__(self)
         except KeyError as e:

@@ -1,8 +1,7 @@
 from flask import request, make_response, jsonify
 from federation_api.app.api.__init__ import people, set_instance, \
     sanitized_parameters, permitted_parameters, process_instance, \
-    NotFoundException, MalformedRequestException, \
-    UnpermittedParametersException, UnprocessibleEntryException
+    NotFoundException, RequestParametersException, UnprocessibleEntryException
 from federation_api.app.helper.__init__ import StarFleetHelper
 from federation_api.app.model.person import Person
 
@@ -38,7 +37,7 @@ def create():
         person = Person.create(
             **sanitized_parameters(Person, request.json, *required_attributes))
         process_instance(person)
-    except (MalformedRequestException, UnprocessibleEntryException) as e:
+    except (RequestParametersException, UnprocessibleEntryException) as e:
         return e.message
 
     attributes = ['name', 'created_at', 'updated_at']
@@ -57,7 +56,7 @@ def update(id):
         person = person.update(
             **permitted_parameters(Person, request.json, *update_attributes))
         process_instance(person)
-    except (NotFoundException, UnpermittedParametersException,
+    except (NotFoundException, RequestParametersException,
             UnprocessibleEntryException) as e:
         return e.message
 
