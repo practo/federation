@@ -9,3 +9,4 @@ inflection
 newrelic
 locustio
 Fabric
+codeclimate-test-reporter
