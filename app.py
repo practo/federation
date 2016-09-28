@@ -49,6 +49,9 @@ app.logger.addHandler(logging.StreamHandler())
 # logging.debug(str(q.statement.compile(dialect=postgresql.dialect())))
 db = SQLAlchemy(app)
 
+from config.routes import blueprints
+for blueprint_name, blueprint_url_prefix in blueprints:
+    app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
 
 # New relic monitoring
 def _init_newrelic_monitoring():
@@ -82,8 +85,5 @@ if __name__ == '__main__':
         else:
             command_help()
 
-    from config.routes import blueprints
-    for blueprint_name, blueprint_url_prefix in blueprints:
-        app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
     _init_newrelic_monitoring()
     app.run(host=host, port=port)
