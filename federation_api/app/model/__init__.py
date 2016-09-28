@@ -7,9 +7,12 @@ from sqlalchemy.ext.declarative import declared_attr
 from app import db
 
 
-def commit_to_session(droid):
+def commit_to_session(droid, action):
     try:
-        db.session.add(droid)
+        if(action == 'add'):
+            db.session.add(droid)
+        elif(action == 'delete'):
+            db.session.delete(droid)
         db.session.flush()
         db.session.commit()
     except exc.SQLAlchemyError as e:
@@ -54,7 +57,7 @@ class StarFleet(db.Model):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(droid, droid_name)):
                 setattr(droid, droid_name, droid_value)
-        droid = commit_to_session(droid)
+        droid = commit_to_session(droid, 'add')
 
         return droid
 
@@ -88,6 +91,8 @@ class StarFleet(db.Model):
         return self.query.all()
 
     @classmethod
+    # FIXME: Does not support query on ARRAY and JSON datatypes
+    # TODO: Find a way to chain queries
     def where(self, **droids):
         valid_droids = {}
         for droid_name, droid_value in droids.iteritems():
@@ -142,7 +147,7 @@ class StarFleet(db.Model):
     # Instance methods BEGIN
 
     def save(self):
-        self = commit_to_session(self)
+        self = commit_to_session(self, 'add')
 
         return self
 
@@ -150,7 +155,7 @@ class StarFleet(db.Model):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(self, droid_name)):
                 setattr(self, droid_name, droid_value)
-        self = commit_to_session(self)
+        self = commit_to_session(self, 'add')
 
         return self
 
@@ -158,13 +163,6 @@ class StarFleet(db.Model):
         if hasattr(self, 'deleted_at'):
             return self.update(deleted_at=datetime.utcnow())
         else:
-            try:
-                db.session.delete(self)
-                db.session.commit()
-            except exc.SQLAlchemyError as e:
-                logging.exception(e)
-                db.session.rollback()
-                self.errors.append(e.message)
-            return self
+            commit_to_session(self, 'delete')
 
     # Instance methods END
