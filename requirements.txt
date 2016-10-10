@@ -9,4 +9,5 @@ inflection
 newrelic
 locustio
 Fabric
+pytest-flask
 codeclimate-test-reporter

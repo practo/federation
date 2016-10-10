@@ -1,4 +1,6 @@
 import os
+from flask_environments import Environments
+from app import app
 
 
 class CommonConfig(object):
@@ -29,3 +31,25 @@ class LatestConfig():
 
 class ProductionConfig():
     pass
+
+env = Environments(app)
+config = app.config
+config.from_object(CommonConfig)
+env.from_yaml(config['CONFIG_PATH'])
+
+ENV = config.get('ENVIORNMENT')
+if ENV == 'TEST':
+    config.from_object(TestConfig)
+elif ENV == 'DEVELOPMENT':
+    config.from_object(DevelopmentConfig)
+elif ENV == 'STAGING':
+    config.from_object(StagingConfig)
+elif ENV == 'LATEST':
+    config.from_object(LatestConfig)
+elif ENV == 'PRODUCTION':
+    config.from_object(ProductionConfig)
+else:
+    # TODO: ENV not set
+    pass
+
+

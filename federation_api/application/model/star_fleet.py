@@ -4,7 +4,7 @@ from inflection import underscore, singularize, pluralize
 from sqlalchemy import and_
 from sqlalchemy import exc
 from sqlalchemy.ext.declarative import declared_attr
-from app import db
+from config import db
 
 
 def commit_to_session(droid, action):
@@ -70,7 +70,7 @@ class StarFleet(db.Model):
         if(hasattr(self, 'deleted_at')):
             return base_query.filter_by(deleted_at=None)
         else:
-            return base_query.all()
+            return base_query
 
     @classmethod
     def first(self):

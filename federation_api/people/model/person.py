@@ -1,5 +1,5 @@
-from federation_api.app.model import StarFleet
-from app import db
+from federation_api.application.model import StarFleet
+from config import db
 
 
 class Person(StarFleet):

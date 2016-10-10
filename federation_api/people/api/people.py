@@ -1,9 +1,9 @@
 from flask import request, make_response, jsonify
-from federation_api.app.api.__init__ import people, set_instance, \
-    sanitized_parameters, permitted_parameters, process_instance, \
+from federation_api.people.api.__init__ import people
+from federation_api.application.api import StarFleetAPI, \
     NotFoundException, RequestParametersException, UnprocessibleEntryException
-from federation_api.app.helper.__init__ import StarFleetHelper
-from federation_api.app.model.person import Person
+from federation_api.application.helper import StarFleetHelper
+from federation_api.people.model import Person
 
 
 @people.route('', methods=['GET'])
@@ -19,7 +19,7 @@ def index():
 @people.route('/<id>', methods=['GET'])
 def show(id):
     try:
-        person = set_instance(Person, id)
+        person = StarFleetAPI.set_instance(Person, id)
     except NotFoundException as e:
         return e.message
     attributes = ['name', 'created_at', 'updated_at']
@@ -35,7 +35,7 @@ def create():
     required_attributes = ['name', 'email', 'account_id', 'phone']
     try:
         person = Person.create(
-            **sanitized_parameters(Person, request.json, *required_attributes))
+            **StarFleetAPI.sanitized_parameters(Person, request.json, *required_attributes))
         process_instance(person)
     except (RequestParametersException, UnprocessibleEntryException) as e:
         return e.message
@@ -52,9 +52,9 @@ def create():
 def update(id):
     update_attributes = ['name']
     try:
-        person = set_instance(Person, id)
+        person = StarFleetAPI.set_instance(Person, id)
         person = person.update(
-            **permitted_parameters(Person, request.json, *update_attributes))
+            **StarFleetAPI.permitted_parameters(Person, request.json, *update_attributes))
         process_instance(person)
     except (NotFoundException, RequestParametersException,
             UnprocessibleEntryException) as e:
@@ -71,7 +71,7 @@ def update(id):
 @people.route('/<id>', methods=['DELETE'])
 def delete():
     try:
-        person = set_instance(Person, id)
+        person = StarFleetAPI.set_instance(Person, id)
         person = person.delete()
     except (NotFoundException, UnprocessibleEntryException) as e:
         return e.message

@@ -34,8 +34,11 @@ class StarFleetHelper():
     @classmethod
     def bulk_serialize_as_json(self, star_fleet_instances,
                                *droid_names, **config):
-        if(type(star_fleet_instances) is not list or not star_fleet_instances):
-            raise TypeError
+        # FIXME: Not accepting config
+        # FIXME: Will break if star_fleet_instances are passed as []
+        if(not star_fleet_instances and config.get('root_name', True)):
+            raise KeyError('Cannot automatically determine type, '
+                            'please provide "root_name" explicitly.')
         star_fleets_json = {}
         instance_config = deepcopy(config)
         instance_config['root'] = False
