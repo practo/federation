@@ -38,7 +38,7 @@ class StarFleetHelper():
         # FIXME: Will break if star_fleet_instances are passed as []
         if(not star_fleet_instances and config.get('root_name', True)):
             raise KeyError('Cannot automatically determine type, '
-                            'please provide "root_name" explicitly.')
+                           'please provide "root_name" explicitly.')
         star_fleets_json = {}
         instance_config = deepcopy(config)
         instance_config['root'] = False

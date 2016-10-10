@@ -4,6 +4,7 @@ from config import ENV
 
 if(ENV in ['LATEST', 'PRODUCTION']):
     from config import app
+
     @app.errorhandler(Exception)
     def generic(error):
         response = make_response(Exception, 500)
@@ -13,40 +14,43 @@ if(ENV in ['LATEST', 'PRODUCTION']):
 
 class StarFleetAPI():
     @classmethod
-    def set_instance(model, id):
+    def set_instance(self, model, id):
         instance = model.find(id)
         if(not instance):
-            raise NotFoundException(model=model.__name__, attribute='id', value=id)
+            raise NotFoundException(model=model.__name__, attribute='id',
+                                    value=id)
 
         return instance
 
     @classmethod
-    def droid_parameters(model, parameters, droid_key):
+    def droid_parameters(self, model, parameters, droid_key):
         if(droid_key not in parameters.keys()):
             raise RequestParametersException('is missing', droid_key)
 
         return parameters[droid_key]
 
     @classmethod
-    def sanitized_parameters(model, parameters, *droid_names):
+    def sanitized_parameters(self, model, parameters, *droid_names):
         droid_key = underscore(model.__name__)
-        model_parameters = droid_parameters(model, parameters, droid_key)
+        model_parameters = self.droid_parameters(model, parameters, droid_key)
         sanitized_droid_names = {}
         missing_droid_names = []
         for droid_name in droid_names:
             try:
-                sanitized_droid_names[droid_name] = model_parameters[droid_name]
+                sanitized_droid_names[droid_name] = \
+                    model_parameters[droid_name]
             except KeyError:
                 missing_droid_names.append('.'.join([droid_key, droid_name]))
         if(missing_droid_names):
-            raise RequestParametersException('is missing', *missing_droid_names)
+            raise RequestParametersException('is missing',
+                                             *missing_droid_names)
 
         return sanitized_droid_names
 
     @classmethod
-    def permitted_parameters(model, parameters, *droid_names):
+    def permitted_parameters(self, model, parameters, *droid_names):
         droid_key = underscore(model.__name__)
-        model_parameters = droid_parameters(model, parameters, droid_key)
+        model_parameters = self.droid_parameters(model, parameters, droid_key)
         permitted_droid_names = {}
         unpermitted_droid_names = []
         for droid_name in droid_names:
@@ -63,7 +67,7 @@ class StarFleetAPI():
         return permitted_droid_names
 
     @classmethod
-    def process_instance(droid):
+    def process_instance(self, droid):
         if(droid.errors):
             raise UnprocessibleEntryException(droid.errors)
 
