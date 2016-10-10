@@ -25,7 +25,6 @@ if __name__ == '__main__':
         else:
             command_help()
 
-
     for blueprint_name, blueprint_url_prefix in blueprints:
         app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
 
