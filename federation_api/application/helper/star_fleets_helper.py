@@ -4,7 +4,7 @@ from copy import deepcopy
 from inflection import underscore, pluralize
 
 
-class StarFleetHelper():
+class StarFleetsHelper():
     @classmethod
     def serialize_as_json(self, star_fleet_instance, *droid_names, **config):
         datetime_format = config.get('datetime_format', '%s')

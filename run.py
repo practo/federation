@@ -9,9 +9,9 @@ def command_help():
 if __name__ == '__main__':
     import sys
     import getopt
-    from config import app
     from config.router import blueprints
     from config.initializers.newrelic_monitoring import NewrelicMonitoring
+    from config import app
 
     options, remainder = getopt.getopt(sys.argv[1:],
                                        'h:p:h', ['host=', 'port=', 'help'])

@@ -1,18 +1,9 @@
 from inflection import underscore
 from flask import make_response, jsonify
-from config import ENV
-
-if(ENV in ['LATEST', 'PRODUCTION']):
-    from config import app
-
-    @app.errorhandler(Exception)
-    def generic(error):
-        response = make_response(Exception, 500)
-        response.mimetype = 'text/plain'
-        return response
+from config import app
 
 
-class StarFleetAPI():
+class StarFleets():
     @classmethod
     def set_instance(self, model, id):
         instance = model.find(id)
@@ -73,9 +64,8 @@ class StarFleetAPI():
 
 
 class NotFoundException(Exception):
-    message = None
-
     def __init__(self, **config):
+        Exception.__init__(self)
         try:
             self.message = make_response(jsonify(
                 {
@@ -83,31 +73,32 @@ class NotFoundException(Exception):
                                .format(config['model'], config['attribute'],
                                        config['value'])]
                 }), 404)
-            Exception.__init__(self)
         except KeyError as e:
             raise SyntaxError('{0} is missing'.format(e.message))
 
 
 class RequestParametersException(Exception):
-    message = None
-
     def __init__(self, message, *parameter_keys):
+        Exception.__init__(self)
         try:
             self.message = make_response(jsonify(
                 {
                     'status': ["'{0}' key {1}".format(parameter_key, message)
                                for parameter_key in parameter_keys]
                 }), 422)
-            Exception.__init__(self)
         except KeyError as e:
             raise SyntaxError('{0} is missing'.format(e.message))
 
 
 class UnprocessibleEntryException(Exception):
-    message = None
-
     def __init__(self, errors):
+        Exception.__init__(self)
         self.message = make_response(jsonify(
             {
                 'status': [error.message for error in errors]
             }), 422)
+
+
+@app.errorhandler(NotFoundException)
+def handle_error(error):
+    return error

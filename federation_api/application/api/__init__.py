@@ -1,5 +1,5 @@
 from flask import Blueprint
-from star_fleet_api import StarFleetAPI, \
+from star_fleets import StarFleets, \
     NotFoundException, RequestParametersException, UnprocessibleEntryException
 
 application = Blueprint('application', __name__)
