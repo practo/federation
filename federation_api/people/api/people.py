@@ -36,7 +36,7 @@ def create():
     try:
         person = Person.create(
             **StarFleets.sanitized_parameters(Person, request.json,
-                                                *required_attributes))
+                                              *required_attributes))
         StarFleets.process_instance(person)
     except (RequestParametersException, UnprocessibleEntryException) as e:
         return e.message
@@ -56,7 +56,7 @@ def update(id):
         person = StarFleets.set_instance(Person, id)
         person = person.update(
             **StarFleets.permitted_parameters(Person, request.json,
-                                                *update_attributes))
+                                              *update_attributes))
         StarFleets.process_instance(person)
     except (NotFoundException, RequestParametersException,
             UnprocessibleEntryException) as e:
