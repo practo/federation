@@ -100,5 +100,7 @@ class UnprocessibleEntryException(Exception):
 
 
 @app.errorhandler(NotFoundException)
+@app.errorhandler(RequestParametersException)
+@app.errorhandler(UnprocessibleEntryException)
 def handle_error(error):
-    return error
+    return error.message

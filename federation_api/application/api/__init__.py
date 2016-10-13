@@ -17,3 +17,6 @@ for squadron, squadron_classes in module.iteritems():
         __import__('federation_api.{0}.{1}.{2}'.format(battalion,
                                                        squadron,
                                                        squadron_class))
+
+__all__ = [StarFleets, NotFoundException, RequestParametersException,
+           UnprocessibleEntryException]
