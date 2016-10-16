@@ -1,6 +1,6 @@
 class TestApplication():
     class TestIndex():
-        def test_index(self, client):
+        def test_ok(self, client):
             assert client.get('/').status_code == 200
 
 

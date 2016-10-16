@@ -62,11 +62,8 @@ class StarFleet(db.Model):
         return droid
 
     @classmethod
-    def all(self):
-        if hasattr(self, 'created_at'):
-            base_query = self.query.order_by(self.created_at.desc())
-        else:
-            base_query = self.query
+    def list(self):
+        base_query = self.query.order_by(self.id.desc())
         if(hasattr(self, 'deleted_at')):
             return base_query.filter_by(deleted_at=None)
         else:
@@ -74,25 +71,24 @@ class StarFleet(db.Model):
 
     @classmethod
     def first(self):
-        try:
-            return self.all()[0]
-        except IndexError:
-            return None
+        if(hasattr(self, 'deleted_at')):
+            base_query = self.query.filter_by(deleted_at=None)
+        else:
+            base_query = self.query
+        return base_query.order_by(self.id.asc()).first()
 
     @classmethod
     def last(self):
-        try:
-            return self.all()[-1]
-        except IndexError:
-            return None
+        return self.list().first()
 
     @classmethod
-    def all_with_deleted(self):
-        return self.query.all()
+    def list_with_deleted(self):
+        base_query = self.query.order_by(self.id.desc())
+        return base_query
 
-    @classmethod
     # FIXME: Does not support query on ARRAY and JSON datatypes
     # TODO: Find a way to chain queries
+    @classmethod
     def where(self, **droids):
         valid_droids = {}
         for droid_name, droid_value in droids.iteritems():
@@ -105,11 +101,8 @@ class StarFleet(db.Model):
                  if supplied_droid_name == singular_droid_name
                  else and_(valid_droid_name.in_(droid_value)))
                  for valid_droid_name, droid_value in valid_droids.iteritems()]
-        if hasattr(self, 'created_at'):
-            return self.query.order_by(self.created_at.desc())\
-                .filter(*query).all()
-        else:
-            return self.query.filter(*query).all()
+        return self.query.order_by(self.id.desc())\
+            .filter(*query).all()
 
     @classmethod
     def find(self, id):
@@ -117,10 +110,7 @@ class StarFleet(db.Model):
 
     @classmethod
     def find_by(self, **droids):
-        try:
-            return self.where(**droids)[0]
-        except IndexError:
-            return None
+        return self.where(**droids).first()
 
     @classmethod
     def find_or_initialize_by(self, **droids):
