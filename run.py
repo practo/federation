@@ -10,6 +10,7 @@ if __name__ == '__main__':
     import sys
     import getopt
     from config.app import create_app
+    from config.logger import init_logger
     from config.initializers.newrelic_monitoring import NewrelicMonitoring
     from config.initializers.errors import RequestErrorHandling
 
@@ -27,6 +28,7 @@ if __name__ == '__main__':
 
     app = create_app()
 
+    init_logger(app)
     RequestErrorHandling(app)
     NewrelicMonitoring(app)
 

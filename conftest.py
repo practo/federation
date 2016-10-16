@@ -1,11 +1,12 @@
 import pytest
 from config.app import create_app
+from config.initializers.errors import RequestErrorHandling
 from config.db import db as _db
 
 
 @pytest.fixture()
 def app():
-    app = create_all()
+    app = create_app()
 
     RequestErrorHandling(app)
     # Router has to be imported at last as it in turns loads the application code

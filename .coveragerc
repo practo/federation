@@ -1,2 +1,2 @@
 [run]
-omit = venv/*, tests/*
+omit = venv/*, tests/*, conftest.py, fabfile.py, locustfile.py, run.py, routes.py
