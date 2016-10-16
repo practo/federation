@@ -1,9 +1,8 @@
-from config import app, config, ENV
-
-
 class NewrelicMonitoring():
-    @classmethod
-    def __init__(self):
+    def __init__(self, app):
+        config = app.config
+        ENV = config.get('ENVIORNMENT')
+
         if config.get('ENABLE_NEWRELIC_MONITORING', False):
             newrelic_ini = config.get('NEWRELIC_INI_PATH', False)
             if(newrelic_ini):

@@ -1,11 +1,18 @@
 import pytest
-
-from config import app
-from monkeyApp.extensions import db as _db
+from config.app import create_app
+from config.db import db as _db
 
 
 @pytest.fixture()
 def app():
+    app = create_all()
+
+    RequestErrorHandling(app)
+    # Router has to be imported at last as it in turns loads the application code
+    with app.app_context():
+        from config.router import load_blueprints
+        load_blueprints(app)
+
     return app
 
 

@@ -4,7 +4,7 @@ from inflection import underscore, singularize, pluralize
 from sqlalchemy import and_
 from sqlalchemy import exc
 from sqlalchemy.ext.declarative import declared_attr
-from config import db
+from config.db import db
 
 
 def commit_to_session(droid, action):

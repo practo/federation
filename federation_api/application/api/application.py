@@ -1,8 +1,10 @@
 import logging
-from flask import make_response, jsonify
-from config import ENV, config, db
+from flask import current_app, make_response, jsonify
+from config.db import db
 from __init__ import application
 
+config = current_app.config
+ENV = config.get('ENVIORNMENT')
 if(ENV in ['DEVELOPMENT', 'TEST']):
     @application.route('/', methods=['GET'])
     def index():

@@ -100,14 +100,14 @@ def servername_compatibility():
 #     )
 
 
-# @sniff(severity='major', timing='fast')
-# def run_tests():
-#     """Running tests"""
-#     info('Running tests...')
-#     value = 'PYTHONPATH="%s" FLASK_ENV=TEST python ./tests/run_tests.py' % ROOT_DIR
-#     return local(
-#         value
-#     )
+@sniff(severity='major', timing='fast')
+def run_tests():
+    """Running tests"""
+    info('Running tests...')
+    value = 'PYTHONPATH=%s FLASK_ENV=TEST py.test --cov=. ./tests' % ROOT_DIR
+    return local(
+        value
+    )
 
 
 @task

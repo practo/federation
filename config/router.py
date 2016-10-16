@@ -5,3 +5,9 @@ blueprints = [
     [application, ''],
     [people, '/people']
 ]
+
+
+def load_blueprints(app):
+    for blueprint_name, blueprint_url_prefix in blueprints:
+            app.register_blueprint(blueprint_name,
+                                   url_prefix=blueprint_url_prefix)

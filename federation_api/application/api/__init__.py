@@ -1,6 +1,5 @@
 from flask import Blueprint
-from star_fleets import StarFleets, \
-    NotFoundException, RequestParametersException, UnprocessibleEntryException
+from star_fleets import StarFleets
 
 application = Blueprint('application', __name__)
 
@@ -18,5 +17,4 @@ for squadron, squadron_classes in module.iteritems():
                                                        squadron,
                                                        squadron_class))
 
-__all__ = [StarFleets, NotFoundException, RequestParametersException,
-           UnprocessibleEntryException]
+__all__ = [StarFleets]

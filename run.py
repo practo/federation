@@ -9,9 +9,9 @@ def command_help():
 if __name__ == '__main__':
     import sys
     import getopt
-    from config.router import blueprints
+    from config.app import create_app
     from config.initializers.newrelic_monitoring import NewrelicMonitoring
-    from config import app
+    from config.initializers.errors import RequestErrorHandling
 
     options, remainder = getopt.getopt(sys.argv[1:],
                                        'h:p:h', ['host=', 'port=', 'help'])
@@ -25,9 +25,14 @@ if __name__ == '__main__':
         else:
             command_help()
 
-    for blueprint_name, blueprint_url_prefix in blueprints:
-        app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
+    app = create_app()
 
-    NewrelicMonitoring()
+    RequestErrorHandling(app)
+    NewrelicMonitoring(app)
+
+    # Router has to be imported at last as it in turns loads the application code
+    with app.app_context():
+        from config.router import load_blueprints
+        load_blueprints(app)
 
     app.run(host=host, port=port)

@@ -10,4 +10,5 @@ newrelic
 locustio
 Fabric
 pytest-flask
+pytest-cov
 codeclimate-test-reporter

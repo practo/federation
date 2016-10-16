@@ -1,14 +1,16 @@
 import urllib
 from flask import url_for
-from config import app
-from config.router import blueprints
+from config.app import create_app
 
 output = []
+app = create_app()
 app.config['SERVER_NAME'] = '<HOST_NAME>:<HOST_PORT>'
-for blueprint_name, blueprint_url_prefix in blueprints:
-        app.register_blueprint(blueprint_name, url_prefix=blueprint_url_prefix)
 
 with app.app_context():
+    # Router has to be imported at last as it in turns loads the application code
+    from config.router import load_blueprints
+    load_blueprints(app)
+
     for rule in app.url_map.iter_rules():
         options = {}
         for arg in rule.arguments:
