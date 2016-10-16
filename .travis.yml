@@ -20,7 +20,7 @@ env:
   FLASK_ENV=TEST
 
 before_script:
-  - cp config.yml.sample config.yml
+  - cp config/config.yml.sample config/config.yml
   - alembic upgrade head
 
 script:
