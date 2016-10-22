@@ -48,7 +48,7 @@ def make_json(root, object, root_name, value):
 class StarFleetsHelper():
     @classmethod
     def serialize_as_json(self, star_fleet_instance, *droid_names, **config):
-        datetime_format = config.get('datetime_format', '%s')
+        datetime_format = config.get('datetime_format')
         star_fleet_json = {}
         for droid_name in droid_names:
             if(droid_name):

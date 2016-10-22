@@ -56,6 +56,21 @@ class TestStarFleetsHelper():
             assert serialized == {'name': person.name}
 
 
+        def test_for_datetime(self):
+            person = PersonFactory.create()
+            serialized = StarFleetsHelper.serialize_as_json(person, 'name', 'created_at')
+            assert serialized == {'person': {'name': person.name,
+                                             'created_at': person.created_at}}
+
+
+        def test_for_datetime_format(self):
+            person = PersonFactory.create()
+            serialized = StarFleetsHelper.serialize_as_json(person, 'name', 'created_at',
+                                                            datetime_format='%s')
+            assert serialized == {'person': {'name': person.name,
+                                             'created_at': person.created_at.strftime('%s')}}
+
+
     class TestBulkSerializeAsJson():
         def test_none_object_without_root(self):
             with pytest.raises(KeyError):
