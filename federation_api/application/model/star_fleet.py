@@ -102,7 +102,7 @@ class StarFleet(db.Model):
                  else and_(valid_droid_name.in_(droid_value)))
                  for valid_droid_name, droid_value in valid_droids.iteritems()]
         return self.query.order_by(self.id.desc())\
-            .filter(*query).all()
+            .filter(*query)
 
     @classmethod
     def find(self, id):

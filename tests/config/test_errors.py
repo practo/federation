@@ -1,8 +1,14 @@
+import pytest
 from config.initializers.errors import NotFoundException, \
     ParametersException, UnprocessibleEntryException
 
 
 class TestErrors():
+    def test_not_found_exception_error(self):
+        with pytest.raises(SyntaxError):
+            not_found_exception = NotFoundException()
+
+
     def test_not_found_exception(self):
         not_found_exception = NotFoundException(model='Person', attribute='id',
                                                 value=0)

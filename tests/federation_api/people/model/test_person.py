@@ -45,5 +45,29 @@ class TestPerson():
         db.session.commit()
         Person.last().delete()
 
-        people = Person.list_with_deleted().all()
+        people = Person.list().all()
+        all_people = Person.list_with_deleted().all()
         assert len(people) == 2
+        assert len(all_people) == 3
+
+
+    def test_where(self):
+        person = PersonFactory.create(name='name')
+
+        people = Person.where(name='name')
+        assert people.all()[0] == person
+        assert people.count() == 1
+
+
+    def test_find(self):
+        person = PersonFactory.create()
+
+        name_person = Person.find(1)
+        assert name_person.id == person.id
+
+
+    def test_find_by(self):
+        person = PersonFactory.create(name='name')
+
+        name_person = Person.find_by(name='name')
+        assert name_person.id == person.id

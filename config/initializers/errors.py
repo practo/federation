@@ -25,16 +25,16 @@ class NotFoundException(Exception):
 
 
 class ParametersException(Exception):
-    def __init__(self, message, *parameter_keys):
+    def __init__(self, message=None, *parameter_keys):
         Exception.__init__(self)
-        try:
+        if(parameter_keys):
             self.message = make_response(jsonify(
                 {
                     'status': ["'{0}' key {1}".format(parameter_key, message)
                                for parameter_key in parameter_keys]
                 }), 422)
-        except KeyError as e:
-            raise SyntaxError('{0} is missing'.format(e.message))
+        else:
+            raise SyntaxError('No parameters provided')
 
 
 class UnprocessibleEntryException(Exception):

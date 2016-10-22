@@ -13,3 +13,7 @@ class Person(StarFleet):
     account_id = db.Column(db.String(length=20), nullable=True, unique=True,
                            index=True)
     name = db.Column(db.String(length=50), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.now())
+    updated_at = db.Column(db.DateTime, nullable=False, default=db.func.now(),
+                           onupdate=db.func.now())
+    deleted_at = db.Column(db.DateTime(), default=None, nullable=True)
