@@ -14,7 +14,6 @@ def create_app():
     init_logger(app)
     RequestErrorHandling(app)
 
-
     config = app.config
     ENV = config.get('ENVIORNMENT')
     if(ENV in ['DEVELOPMENT', 'TEST']):
