@@ -7,11 +7,13 @@ from federation_api.people.model import Person
 
 @people.route('', methods=['GET'])
 def index():
-    people = Person.all()
+    people = Person.list().all()
     attributes = ['name']
+    config = {'root': True, 'root_name': 'people'}
 
     return make_response(jsonify(
-            StarFleetsHelper.bulk_serialize_as_json(people, *attributes)
+            StarFleetsHelper.bulk_serialize_as_json(people, *attributes,
+                                                    **config)
         ), 200)
 
 

@@ -8,7 +8,7 @@ class StatusBehavior(TaskSet):
 
     @task(1)
     def status(self):
-        self.client.get("/status")
+        self.client.get('/status')
 
 
 class PeopleBehavior(TaskSet):

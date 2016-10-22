@@ -1,17 +1,7 @@
 import logging
-from flask import current_app, make_response, jsonify
+from flask import make_response, jsonify
 from config.db import db
 from __init__ import application
-
-config = current_app.config
-ENV = config.get('ENVIORNMENT')
-if(ENV in ['DEVELOPMENT', 'TEST']):
-    @application.route('/', methods=['GET'])
-    def index():
-        env = {}
-        for configuration, value in config.iteritems():
-            env[configuration] = str(value)
-        return make_response(jsonify(env), 200)
 
 
 @application.route('/status', methods=['GET'])
