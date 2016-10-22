@@ -13,5 +13,5 @@ class PersonFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     email = factory.LazyAttribute(lambda x: faker.email())
     phone = factory.LazyAttribute(lambda x: faker.phone_number())
-    account_id = factory.LazyAttribute(lambda x: random.randint(100, 999))
+    account_id = factory.LazyAttribute(lambda x: random.randint(1000, 9999))
     name = factory.LazyAttribute(lambda x: faker.name())
