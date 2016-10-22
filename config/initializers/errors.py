@@ -38,9 +38,9 @@ class ParametersException(Exception):
 
 
 class UnprocessibleEntryException(Exception):
-    def __init__(self, errors):
+    def __init__(self, errors=[]):
         Exception.__init__(self)
         self.message = make_response(jsonify(
             {
-                'status': [error.message for error in errors]
+                'status': errors
             }), 422)
