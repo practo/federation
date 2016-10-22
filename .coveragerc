@@ -1,2 +1,2 @@
 [run]
-omit = venv/*, tests/*, conftest.py, fabfile.py, locustfile.py, manage.py, routes.py, config/initializers/newrelic_monitoring.py
+omit = venv/*, tests/*, conftest.py, fabfile.py, locustfile.py, manage.py, config/initializers/newrelic_monitoring.py

@@ -1,71 +1,61 @@
-from flask import request, make_response, jsonify
+from flask import request
 from federation_api.people.api.__init__ import people
 from federation_api.application.api import StarFleets
-from federation_api.application.helper import StarFleetsHelper
+from federation_api.application.helper import to_json
+from federation_api.people.helper import PeopleHelper
 from federation_api.people.model import Person
 
 
-@people.route('', methods=['GET'])
-def index():
-    people = Person.list().all()
-    attributes = ['name']
-    config = {'root': True, 'root_name': 'people'}
+class People(StarFleets):
+    @people.route('', methods=['GET'])
+    @to_json
+    def index():
+        people = Person.list().all()
+        attributes = ['name']
+        config = {'root': True, 'root_name': 'people'}
 
-    return make_response(jsonify(
-            StarFleetsHelper.bulk_serialize_as_json(people, *attributes,
-                                                    **config)
-        ), 200)
+        return PeopleHelper.bulk_serialize(people, *attributes, **config)
 
+    @people.route('/<id>', methods=['GET'])
+    @to_json
+    def show(id):
+        person = People.set_instance(Person, id)
+        attributes = ['name', 'created_at', 'updated_at']
+        config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
 
-@people.route('/<id>', methods=['GET'])
-def show(id):
-    person = StarFleets.set_instance(Person, id)
-    attributes = ['name', 'created_at', 'updated_at']
-    config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
+        return PeopleHelper.serialize(person, *attributes, **config)
 
-    return make_response(jsonify(
-            StarFleetsHelper.serialize_as_json(person, *attributes, **config)
-        ), 200)
-
-
-@people.route('', methods=['POST'])
-def create():
-    required_attributes = ['name', 'email', 'account_id', 'phone']
-    person = Person.create(
-        **StarFleets.sanitized_parameters(Person, request.json,
+    @people.route('', methods=['POST'])
+    @to_json
+    def create():
+        required_attributes = ['name', 'email', 'account_id', 'phone']
+        person = Person.create(
+            **People.sanitized_parameters(Person, request.json,
                                           *required_attributes))
-    StarFleets.process_instance(person)
-    attributes = ['name', 'created_at', 'updated_at']
-    config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
+        People.process_instance(person)
+        attributes = ['name', 'created_at', 'updated_at']
+        config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
 
-    return make_response(jsonify(
-            StarFleetsHelper.serialize_as_json(person, *attributes, **config)
-        ))
+        return PeopleHelper.serialize(person, *attributes, **config), 201
 
-
-@people.route('/<id>', methods=['PUT'])
-def update(id):
-    update_attributes = ['name']
-    person = StarFleets.set_instance(Person, id)
-    person = person.update(
-        **StarFleets.permitted_parameters(Person, request.json,
+    @people.route('/<id>', methods=['PUT'])
+    @to_json
+    def update(id):
+        update_attributes = ['name']
+        person = People.set_instance(Person, id)
+        person = person.update(
+            **People.permitted_parameters(Person, request.json,
                                           *update_attributes))
-    StarFleets.process_instance(person)
-    attributes = ['name', 'created_at', 'updated_at']
-    config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
+        People.process_instance(person)
+        attributes = ['name', 'created_at', 'updated_at']
+        config = {'datetime_format': '%a %b %d %H:%M:%S %Y'}
 
-    return make_response(jsonify(
-            StarFleetsHelper.serialize_as_json(person, *attributes, **config)
-        ))
+        return PeopleHelper.serialize(person, *attributes, **config)
 
+    @people.route('/<id>', methods=['DELETE'])
+    @to_json
+    def delete():
+        person = People.set_instance(Person, id)
+        person = person.delete()
 
-@people.route('/<id>', methods=['DELETE'])
-def delete():
-    person = StarFleets.set_instance(Person, id)
-    person = person.delete()
-
-    return make_response(jsonify(
-        {
-            'status': "Person with id='{0}' was successfully deleted"
-                      .format(id)
-        }), 202)
+        return "Person with id='{0}' was successfully deleted".format(id), 202

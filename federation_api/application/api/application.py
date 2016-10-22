@@ -1,10 +1,11 @@
 import logging
-from flask import make_response, jsonify
 from config.db import db
 from __init__ import application
+from federation_api.application.helper import to_json
 
 
 @application.route('/status', methods=['GET'])
+@to_json
 def status():
     message = {'status': {}}
     status_code = 200
@@ -17,4 +18,4 @@ def status():
         message.get('status')['Database'] = 'Down'
         status_code = 500
 
-    return make_response(jsonify(message), status_code)
+    return message, status_code

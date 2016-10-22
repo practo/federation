@@ -47,7 +47,7 @@ def make_json(root, object, root_name, value):
 
 class StarFleetsHelper():
     @classmethod
-    def serialize_as_json(self, star_fleet_instance, *droid_names, **config):
+    def serialize(self, star_fleet_instance, *droid_names, **config):
         datetime_format = config.get('datetime_format')
         star_fleet_json = {}
         for droid_name in droid_names:
@@ -63,17 +63,15 @@ class StarFleetsHelper():
         return star_fleet_instance_json
 
     @classmethod
-    def bulk_serialize_as_json(self, star_fleet_instances,
-                               *droid_names, **config):
+    def bulk_serialize(self, star_fleet_instances, *droid_names, **config):
         star_fleet_instances = star_fleet_instances or []
         star_fleets_json = {}
         instance_config = deepcopy(config)
         instance_config['root'] = False
         star_fleets = []
         for star_fleet_instance in star_fleet_instances:
-            star_fleets.append(self.serialize_as_json(star_fleet_instance,
-                                                      *droid_names,
-                                                      **instance_config))
+            star_fleets.append(self.serialize(star_fleet_instance,
+                                              *droid_names, **instance_config))
         star_fleets_json = make_json(
             config.get('root', True), star_fleet_instances,
             config.get('root_name'), star_fleets)
