@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 from inflection import underscore, singularize, pluralize
 from sqlalchemy import and_
-from sqlalchemy import exc
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError
 from sqlalchemy.ext.declarative import declared_attr
 from config.db import db
 
@@ -15,7 +15,7 @@ def commit_to_session(droid, action):
             db.session.delete(droid)
         db.session.flush()
         db.session.commit()
-    except exc.SQLAlchemyError as e:
+    except (SQLAlchemyError, InvalidRequestError) as e:
         logging.exception(e)
         db.session.rollback()
         droid.errors.append(e.message)
@@ -138,21 +138,37 @@ class StarFleet(db.Model):
 
     def save(self):
         self = commit_to_session(self, 'add')
-
-        return self
+        if(self.errors):
+            return False
+        else:
+            return self
 
     def update(self, **droids):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(self, droid_name)):
                 setattr(self, droid_name, droid_value)
-        self = commit_to_session(self, 'add')
+        self = self.save()
 
         return self
 
+    # WARNING
+    # destroy() returns an instance that has been deleted from DB
+    # Any instance method usage on such an instance will result in ERROR such as:
+    # InvalidRequestError: Instance '<Person at 0x7f0bad2b26d0>' has been deleted.
+    # Use the make_transient() function to send this object back to the transient state.
+    def destroy(self):
+        self = commit_to_session(self, 'delete')
+        if(self.errors):
+            return False
+        else:
+            return self
+
     def delete(self):
         if hasattr(self, 'deleted_at'):
-            return self.update(deleted_at=datetime.utcnow())
+            self = self.update(deleted_at=datetime.utcnow())
         else:
-            commit_to_session(self, 'delete')
+            self = self.destroy()
+
+        return self
 
     # Instance methods END

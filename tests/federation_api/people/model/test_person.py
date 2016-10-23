@@ -1,3 +1,5 @@
+import pytest
+from sqlalchemy.exc import InvalidRequestError
 from config.db import db
 from federation_api.people.model import Person
 from tests.factories.person_factory import PersonFactory
@@ -8,6 +10,12 @@ class TestPerson():
         person = Person.new(name='name', email='a@b.com')
         assert person.name == 'name'
         assert person.email == 'a@b.com'
+
+
+    def test_save(self):
+        person = PersonFactory.build()
+        person.save()
+        assert person.id is not None
 
 
     def test_create(self):
@@ -53,7 +61,7 @@ class TestPerson():
 
     def test_where(self):
         person = PersonFactory.create(name='name')
-
+        db.session.commit()
         people = Person.where(name='name')
         assert people.all()[0] == person
         assert people.count() == 1
@@ -62,7 +70,6 @@ class TestPerson():
     def test_find(self):
         person = PersonFactory.create()
         db.session.commit()
-
         name_person = Person.find(1)
         assert name_person.id == person.id
 
@@ -70,6 +77,20 @@ class TestPerson():
     def test_find_by(self):
         person = PersonFactory.create(name='name')
         db.session.commit()
-
         name_person = Person.find_by(name='name')
         assert name_person.id == person.id
+
+
+    def test_destroy(self):
+        person = PersonFactory.create()
+        db.session.commit()
+        person.destroy()
+        destroy_person = Person.find(person.id)
+        assert destroy_person is None
+
+
+    def test_delete(self):
+        person = PersonFactory.create()
+        db.session.commit()
+        person = person.delete()
+        assert person.deleted_at is not None
