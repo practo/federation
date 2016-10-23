@@ -16,5 +16,3 @@ class PersonFactory(factory.alchemy.SQLAlchemyModelFactory):
     phone = factory.LazyAttribute(lambda x: faker.phone_number())
     account_id = factory.LazyAttribute(lambda x: random.randint(1000, 9999))
     name = factory.LazyAttribute(lambda x: faker.name())
-    created_at = factory.LazyAttribute(lambda x: datetime.utcnow())
-    updated_at = factory.LazyAttribute(lambda x: datetime.utcnow())

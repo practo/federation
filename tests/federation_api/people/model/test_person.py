@@ -1,3 +1,4 @@
+from config.db import db
 from federation_api.people.model import Person
 from tests.factories.person_factory import PersonFactory
 
@@ -20,24 +21,28 @@ class TestPerson():
 
     def test_list(self):
         PersonFactory.create_batch(3)
+        db.session.commit()
         people = Person.list().all()
         assert len(people) == 3
 
 
     def test_first(self):
         PersonFactory.create_batch(3)
+        db.session.commit()
         person = Person.first()
         assert person.id == 1
 
 
     def test_last(self):
         PersonFactory.create_batch(3)
+        db.session.commit()
         person = Person.last()
         assert person.id == 3
 
 
     def test_list_with_deleted(self):
         PersonFactory.create_batch(3)
+        db.session.commit()
         Person.last().delete()
 
         people = Person.list().all()
@@ -56,6 +61,7 @@ class TestPerson():
 
     def test_find(self):
         person = PersonFactory.create()
+        db.session.commit()
 
         name_person = Person.find(1)
         assert name_person.id == person.id
@@ -63,6 +69,7 @@ class TestPerson():
 
     def test_find_by(self):
         person = PersonFactory.create(name='name')
+        db.session.commit()
 
         name_person = Person.find_by(name='name')
         assert name_person.id == person.id

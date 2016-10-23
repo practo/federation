@@ -14,8 +14,8 @@ class StarFleets():
         return instance
 
     @classmethod
-    def droid_parameters(self, model, parameters, droid_key):
-        if(droid_key not in parameters.keys()):
+    def droid_parameters(self, parameters, droid_key):
+        if(parameters is None or droid_key not in parameters.keys()):
             raise ParametersException('is missing', droid_key)
 
         return parameters[droid_key]
@@ -23,7 +23,7 @@ class StarFleets():
     @classmethod
     def sanitized_parameters(self, model, parameters, *droid_names):
         droid_key = underscore(model.__name__)
-        model_parameters = self.droid_parameters(model, parameters, droid_key)
+        model_parameters = self.droid_parameters(parameters, droid_key)
         sanitized_droid_names = {}
         missing_droid_names = []
         for droid_name in droid_names:
@@ -40,7 +40,7 @@ class StarFleets():
     @classmethod
     def permitted_parameters(self, model, parameters, *droid_names):
         droid_key = underscore(model.__name__)
-        model_parameters = self.droid_parameters(model, parameters, droid_key)
+        model_parameters = self.droid_parameters(parameters, droid_key)
         permitted_droid_names = {}
         unpermitted_droid_names = []
         for droid_name in droid_names:

@@ -1,7 +1,7 @@
 from flask import request
-from federation_api.people.api.__init__ import people
 from federation_api.application.api import StarFleets
 from federation_api.application.helper import to_json
+from federation_api.people.api.__init__ import people
 from federation_api.people.helper import PeopleHelper
 from federation_api.people.model import Person
 
@@ -11,12 +11,13 @@ class People(StarFleets):
     @to_json
     def index():
         people = Person.list().all()
-        attributes = ['name']
-        config = {'root': True, 'root_name': 'people'}
+        attributes = ['name', 'updated_at']
+        config = {'datetime_format': '%s',
+                  'root': True, 'root_name': 'people'}
 
         return PeopleHelper.bulk_serialize(people, *attributes, **config)
 
-    @people.route('/<id>', methods=['GET'])
+    @people.route('/<int:id>', methods=['GET'])
     @to_json
     def show(id):
         person = People.set_instance(Person, id)
@@ -38,7 +39,7 @@ class People(StarFleets):
 
         return PeopleHelper.serialize(person, *attributes, **config), 201
 
-    @people.route('/<id>', methods=['PUT'])
+    @people.route('/<int:id>', methods=['PUT'])
     @to_json
     def update(id):
         update_attributes = ['name']
@@ -52,9 +53,9 @@ class People(StarFleets):
 
         return PeopleHelper.serialize(person, *attributes, **config)
 
-    @people.route('/<id>', methods=['DELETE'])
+    @people.route('/<int:id>', methods=['DELETE'])
     @to_json
-    def delete():
+    def delete(id):
         person = People.set_instance(Person, id)
         person = person.delete()
 

@@ -1,11 +1,14 @@
+import pytest
+from flask import url_for
+
+
+@pytest.mark.usefixtures('client_class')
 class TestApplication():
-    class TestIndex():
-        def test_ok(self, client):
-            assert client.get('/').status_code == 200
+    def test_index(self):
+            assert self.client.get(url_for('index')).status_code == 200
 
 
-    class TestStatus():
-        def test_ok(self, client):
-            response = client.get('/status')
-            assert response.status_code == 200
-            assert response.json == {'status': {'Database': 'Up'}}
+    def test_status(self):
+        response = self.client.get(url_for('application.status'))
+        assert response.status_code == 200
+        assert response.json == {'status': {'Database': 'Up'}}

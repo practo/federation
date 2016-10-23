@@ -1,6 +1,6 @@
 import pytest
+from config.db import db
 from federation_api.application.helper.star_fleets_helper import StarFleetsHelper
-from federation_api.people.model import Person
 from tests.factories.person_factory import PersonFactory
 
 class TestStarFleetsHelper():
@@ -23,6 +23,7 @@ class TestStarFleetsHelper():
 
         def test_none_keys_with_root(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, None,
                                                             root=True)
             assert serialized == {'person': {}}
@@ -30,6 +31,7 @@ class TestStarFleetsHelper():
 
         def test_none_keys_without_root(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, None,
                                                             root=False,
                                                             root_name='thing')
@@ -38,12 +40,14 @@ class TestStarFleetsHelper():
 
         def test_with_root_implicit(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, 'name')
             assert serialized == {'person': {'name': person.name}}
 
 
         def test_with_root_explicit(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, 'name',
                                                             root_name='thing')
             assert serialized == {'thing': {'name': person.name}}
@@ -51,6 +55,7 @@ class TestStarFleetsHelper():
 
         def test_without_root(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, 'name',
                                                             root=False)
             assert serialized == {'name': person.name}
@@ -58,6 +63,7 @@ class TestStarFleetsHelper():
 
         def test_for_datetime(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, 'name', 'created_at')
             assert serialized == {'person': {'name': person.name,
                                              'created_at': person.created_at}}
@@ -65,6 +71,7 @@ class TestStarFleetsHelper():
 
         def test_for_datetime_format(self):
             person = PersonFactory.create()
+            db.session.commit()
             serialized = StarFleetsHelper.serialize(person, 'name', 'created_at',
                                                             datetime_format='%s')
             assert serialized == {'person': {'name': person.name,
@@ -90,6 +97,7 @@ class TestStarFleetsHelper():
 
         def test_none_keys_with_root(self):
             people = PersonFactory.create_batch(3)
+            db.session.commit()
             serialized = StarFleetsHelper.bulk_serialize(people, None,
                                                                  root=True)
             assert serialized == {'people': [{}, {}, {}], 'total': 3}
@@ -97,6 +105,7 @@ class TestStarFleetsHelper():
 
         def test_none_keys_without_root(self):
             people = PersonFactory.create_batch(3)
+            db.session.commit()
             serialized = StarFleetsHelper.bulk_serialize(people, None,
                                                                  root=False)
             assert serialized == [{}, {}, {}]
@@ -104,7 +113,7 @@ class TestStarFleetsHelper():
 
         def test_with_root_implicit(self):
             people = PersonFactory.create_batch(3)
-            people = Person.list().all()
+            db.session.commit()
             serialized = StarFleetsHelper.bulk_serialize(people, 'name')
             assert serialized == {'people': [{'name': people[0].name},
                                              {'name': people[1].name},
@@ -114,7 +123,6 @@ class TestStarFleetsHelper():
 
         def test_with_root_explicit(self):
             people = PersonFactory.create_batch(3)
-            people = Person.list().all()
             serialized = StarFleetsHelper.bulk_serialize(people, 'name',
                                                                  root_name='thing')
             assert serialized == {'thing': [{'name': people[0].name},
@@ -125,7 +133,7 @@ class TestStarFleetsHelper():
 
         def test_without_root(self):
             people = PersonFactory.create_batch(3)
-            people = Person.list().all()
+            db.session.commit()
             serialized = StarFleetsHelper.bulk_serialize(people, 'name',
                                                                  root=False)
             assert serialized == [{'name': people[0].name},
