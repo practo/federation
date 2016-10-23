@@ -10,3 +10,22 @@
 
 ---
 
+#### Stack
+Web server | Application server | Framework | Language
+--- | --- | --- | --- |
+Nginx 1.10 | uwsgi 2.0.14 | Flask 0.11.1 | Python 2.7.6
+
+#### Structure
+
+#### StarFleet
+> *Who doesn't love beautiful models* :womans_clothes:
+
+#### StarFleets
+> *Hand over the control* :hand:
+
+#### StarFleetsHelper
+> *Aye aye, captain. Full speed ahead!* :rowboat:
+
+#### Alembic
+
+#### Newrelic Monitoring

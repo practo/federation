@@ -49,6 +49,7 @@ class StarFleet(db.Model):
 
     @classmethod
     def new(self, **droids):
+        self.errors = []
         return self(**droids)
 
     @classmethod
@@ -101,8 +102,14 @@ class StarFleet(db.Model):
                  if supplied_droid_name == singular_droid_name
                  else and_(valid_droid_name.in_(droid_value)))
                  for valid_droid_name, droid_value in valid_droids.iteritems()]
-        return self.query.order_by(self.id.desc())\
-            .filter(*query)
+        if(hasattr(self, 'deleted_at')):
+            base_query = self.query.filter(and_(self.deleted_at.is_(None),
+                                                *query))\
+                .order_by(self.id.desc())
+        else:
+            base_query = self.query.filter(*query).order_by(self.id.desc())
+
+        return base_query
 
     @classmethod
     def find(self, id):
@@ -132,11 +139,15 @@ class StarFleet(db.Model):
     def count_with_deleted(self):
         return db.session.query(db.func.count(self.id)).scalar()
 
+    # TODO: Bulk insert
+    # TODO: Truncate table
+
     # Class methods END
 
     # Instance methods BEGIN
 
     def save(self):
+        self.errors = []
         self = commit_to_session(self, 'add')
         if(self.errors):
             return False
@@ -153,10 +164,11 @@ class StarFleet(db.Model):
 
     # WARNING
     # destroy() returns an instance that has been deleted from DB
-    # Any instance method usage on such an instance will result in ERROR such as:
-    # InvalidRequestError: Instance '<Person at 0x7f0bad2b26d0>' has been deleted.
-    # Use the make_transient() function to send this object back to the transient state.
+    # Any instance method usage other than StarFleet instance methods will result in ERROR such as:  # noqa
+    # InvalidRequestError: Instance '<Person at 0x7f0bad2b26d0>' has been deleted.  # noqa
+    # Use the make_transient() function to send this object back to the transient state.  # noqa
     def destroy(self):
+        self.errors = []
         self = commit_to_session(self, 'delete')
         if(self.errors):
             return False

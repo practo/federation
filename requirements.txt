@@ -1,19 +1,34 @@
-# TODO: Organize requirements and add comments
+# Travis build
 fab-polish >= 1.0.1, < 2
 pep8
 pyflakes
+Fabric
+
+# Flask and extensions
 Flask == 0.11.1
 flask-environments
 alembic
 Flask-SQLAlchemy
+Flask-Script
+
+# Production server
+uwsgi
+
+# Dependencies
 inflection
-newrelic
-locustio
-Fabric
+
+# Testing
 pytest-flask
 pytest-cov
 codeclimate-test-reporter
 factory_boy
 Faker
-Flask-Script
+
+# Load testing
+locustio
+
+# Dev tools
 ipython
+
+# Monitoring
+newrelic
