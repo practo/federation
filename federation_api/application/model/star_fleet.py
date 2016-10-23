@@ -8,6 +8,7 @@ from config.db import db
 
 
 def commit_to_session(droid, action):
+    droid.errors = []
     try:
         if(action == 'add'):
             db.session.add(droid)
@@ -20,7 +21,10 @@ def commit_to_session(droid, action):
         db.session.rollback()
         droid.errors.append(e.message)
     finally:
-        return droid
+        if(droid.errors):
+            return False
+        else:
+            return droid
 
 
 class StarFleet(db.Model):
@@ -49,7 +53,6 @@ class StarFleet(db.Model):
 
     @classmethod
     def new(self, **droids):
-        self.errors = []
         return self(**droids)
 
     @classmethod
@@ -58,9 +61,8 @@ class StarFleet(db.Model):
         for droid_name, droid_value in droids.iteritems():
             if(hasattr(droid, droid_name)):
                 setattr(droid, droid_name, droid_value)
-        droid = commit_to_session(droid, 'add')
 
-        return droid
+        return commit_to_session(droid, 'add')
 
     @classmethod
     def list(self):
@@ -76,6 +78,7 @@ class StarFleet(db.Model):
             base_query = self.query.filter_by(deleted_at=None)
         else:
             base_query = self.query
+
         return base_query.order_by(self.id.asc()).first()
 
     @classmethod
@@ -85,6 +88,7 @@ class StarFleet(db.Model):
     @classmethod
     def list_with_deleted(self):
         base_query = self.query.order_by(self.id.desc())
+
         return base_query
 
     # FIXME: Does not support query on ARRAY and JSON datatypes
@@ -147,12 +151,7 @@ class StarFleet(db.Model):
     # Instance methods BEGIN
 
     def save(self):
-        self.errors = []
-        self = commit_to_session(self, 'add')
-        if(self.errors):
-            return False
-        else:
-            return self
+        return commit_to_session(self, 'add')
 
     def update(self, **droids):
         for droid_name, droid_value in droids.iteritems():
@@ -168,12 +167,7 @@ class StarFleet(db.Model):
     # InvalidRequestError: Instance '<Person at 0x7f0bad2b26d0>' has been deleted.  # noqa
     # Use the make_transient() function to send this object back to the transient state.  # noqa
     def destroy(self):
-        self.errors = []
-        self = commit_to_session(self, 'delete')
-        if(self.errors):
-            return False
-        else:
-            return self
+        return commit_to_session(self, 'delete')
 
     def delete(self):
         if hasattr(self, 'deleted_at'):
