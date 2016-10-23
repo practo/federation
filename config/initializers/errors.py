@@ -16,9 +16,9 @@ class NotFoundException(Exception):
         try:
             self.message = make_response(jsonify(
                 {
-                    'status': ["{0} with {1}='{2}' not found"
-                               .format(config['model'], config['attribute'],
-                                       config['value'])]
+                    'error': ["{0} with {1}='{2}' not found"
+                              .format(config['model'], config['attribute'],
+                                      config['value'])]
                 }), 404)
         except KeyError as e:
             raise SyntaxError('{0} is missing'.format(e.message))
@@ -30,8 +30,8 @@ class ParametersException(Exception):
         if(parameter_keys):
             self.message = make_response(jsonify(
                 {
-                    'status': ["'{0}' key {1}".format(parameter_key, message)
-                               for parameter_key in parameter_keys]
+                    'error': ["'{0}' key {1}".format(parameter_key, message)
+                              for parameter_key in parameter_keys]
                 }), 422)
         else:
             raise SyntaxError('No parameters provided')
@@ -42,5 +42,5 @@ class UnprocessibleEntryException(Exception):
         Exception.__init__(self)
         self.message = make_response(jsonify(
             {
-                'status': errors
+                'error': errors
             }), 422)
