@@ -5,7 +5,7 @@ pyflakes
 Fabric
 
 # Flask and extensions
-Flask == 0.11.1
+Flask == 1.0
 flask-environments
 alembic
 Flask-SQLAlchemy
